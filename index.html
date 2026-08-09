@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>⚾ 선수 육성 시뮬레이션</title>
+<title>⚾ Baseball Career Simulator</title>
 <style>
 body{margin:0;font-family:Arial,sans-serif;background:#0f172a;color:#f8fafc}
 header{background:#111827;padding:18px;text-align:center;border-bottom:2px solid #334155}
@@ -11,313 +11,109 @@ header{background:#111827;padding:18px;text-align:center;border-bottom:2px solid
 .panel{background:#1e293b;border-radius:12px;padding:16px}
 button{width:100%;padding:12px;margin-top:10px;border:none;border-radius:8px;background:#2563eb;color:#fff;cursor:pointer}
 button:hover{background:#1d4ed8}
-.stat{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #334155}
 .log{height:560px;overflow-y:auto;background:#0b1220;border-radius:8px;padding:10px;font-size:14px;line-height:1.5}
-.badge{background:#16a34a;border-radius:999px;padding:2px 8px;font-size:12px}
-.section-title{margin-top:0;padding-bottom:8px;border-bottom:1px solid #334155}
+.stat{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #334155}
 </style>
 </head>
 <body>
 <header>
-  <h1>⚾ 선수 육성 시뮬레이션</h1>
-  <div>KBO 현실 기반 커리어 웹게임 (FA/에이전트 추가)</div>
+<h1>⚾ Baseball Career Simulator</h1>
+<div>Python 프로젝트 HTML 포팅 시작 버전</div>
 </header>
 
 <div class="container">
   <div class="panel">
-    <h2 class="section-title">선수 정보</h2>
-    <div id="playerInfo"></div>
-
-    <button onclick="generatePlayer()">🎲 새 선수 생성</button>
-    <button onclick="train()">🏋️ 훈련하기</button>
+    <h2>선수 정보</h2>
+    <div id="player"></div>
+    <button onclick="newPlayer()">🎲 새 선수 생성</button>
+    <button onclick="train()">🏋️ 훈련</button>
     <button onclick="playGame()">⚾ 경기 진행</button>
     <button onclick="nextSeason()">📅 다음 시즌</button>
-    <button onclick="openFA()">💰 FA 협상</button>
   </div>
 
   <div class="panel">
-    <h2 class="section-title">뉴스 / 기록</h2>
-    <div class="log" id="log"></div>
+    <h2>로그</h2>
+    <div id="log" class="log"></div>
   </div>
 </div>
 
 <script>
-const KBO_TEAMS=[
-  "LG 트윈스","두산 베어스","KT 위즈","SSG 랜더스","NC 다이노스",
-  "키움 히어로즈","KIA 타이거즈","삼성 라이온즈","롯데 자이언츠","한화 이글스"
-];
-
 const FIRST=["민준","서준","도윤","예준","시우","지호","현우","준혁"];
 const LAST=["김","이","박","최","정","강","조","윤"];
-
-const AGENTS=[
-  {name:"박성우",style:"aggressive",commission:0.05},
-  {name:"김태훈",style:"balanced",commission:0.04},
-  {name:"이준호",style:"loyal",commission:0.03}
-];
+const KBO=["LG 트윈스","두산 베어스","KT 위즈","SSG 랜더스","NC 다이노스","키움 히어로즈","KIA 타이거즈","삼성 라이온즈","롯데 자이언츠","한화 이글스"];
 
 let player=null;
 
 function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
 
-function gaussian(mean,sd){
-  let u=0,v=0;
-  while(u===0)u=Math.random();
-  while(v===0)v=Math.random();
-  return Math.round(mean+sd*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v));
+function log(msg){
+  const box=document.getElementById('log');
+  const line=document.createElement('div');
+  line.innerHTML='['+new Date().toLocaleTimeString()+'] '+msg;
+  box.prepend(line);
 }
 
-function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
-
-function generateStat(mean=50,sd=12,min=20,max=99){
-  return clamp(gaussian(mean,sd),min,max);
-}
-
-function scoutingGrade(v){
-  return 20+Math.round((v/100)*60/5)*5;
-}
-
-function randomName(){
-  return LAST[rand(0,LAST.length-1)] + FIRST[rand(0,FIRST.length-1)];
-}
-
-function assignAgent(p){
-  p.agent=AGENTS[rand(0,AGENTS.length-1)];
-}
-
-function generatePlayer(){
-  let velocity=clamp(gaussian(143,4),133,160);
-
-  if(velocity>=155 && Math.random()>0.005){
-    velocity=rand(148,154);
-  }
-
-  player={
-    name:randomName(),
-    age:18,
-    team:"고교팀",
-    salary:3000,
-    serviceTime:0,
-    hitting:{
-      contact:generateStat(45,10),
-      power:generateStat(42,10),
-      eye:generateStat(44,10)
-    },
-    pitching:{
-      velocity,
-      control:generateStat(45,10),
-      movement:generateStat(44,10),
-      stamina:generateStat(50,10)
-    },
-    hidden:{
-      potential:generateStat(75,8,60,95),
-      durability:generateStat(65,12),
-      mentality:generateStat(60,15)
-    },
-    stats:{
-      games:0,
-      hits:0,
-      homeruns:0,
-      strikeouts:0
-    }
-  };
-
-  assignAgent(player);
-
-  renderPlayer();
-  log(`🎉 신인 선수 <b>${player.name}</b> 생성!`);
-  log(`🤝 에이전트: <b>${player.agent.name}</b> (${player.agent.style})`);
-}
-
-function renderPlayer(){
+function render(){
   if(!player)return;
-
-  document.getElementById("playerInfo").innerHTML=`
+  document.getElementById('player').innerHTML=`
     <div class="stat"><span>이름</span><strong>${player.name}</strong></div>
-    <div class="stat"><span>나이</span><strong>${player.age}세</strong></div>
+    <div class="stat"><span>나이</span><strong>${player.age}</strong></div>
     <div class="stat"><span>팀</span><strong>${player.team}</strong></div>
+    <div class="stat"><span>컨택</span><strong>${player.contact}</strong></div>
+    <div class="stat"><span>파워</span><strong>${player.power}</strong></div>
+    <div class="stat"><span>구속</span><strong>${player.velocity} km/h</strong></div>
     <div class="stat"><span>연봉</span><strong>${player.salary.toLocaleString()}만원</strong></div>
-    <div class="stat"><span>서비스타임</span><strong>${player.serviceTime}년</strong></div>
-    <div class="stat"><span>에이전트</span><strong>${player.agent.name}</strong></div>
-
-    <hr style="border-color:#334155">
-
-    <div class="stat"><span>컨택</span><span>${player.hitting.contact} <span class="badge">${scoutingGrade(player.hitting.contact)}</span></span></div>
-    <div class="stat"><span>파워</span><span>${player.hitting.power} <span class="badge">${scoutingGrade(player.hitting.power)}</span></span></div>
-    <div class="stat"><span>선구안</span><span>${player.hitting.eye} <span class="badge">${scoutingGrade(player.hitting.eye)}</span></span></div>
-    <div class="stat"><span>구속</span><span>${player.pitching.velocity} km/h</span></div>
-    <div class="stat"><span>제구</span><span>${player.pitching.control} <span class="badge">${scoutingGrade(player.pitching.control)}</span></span></div>
-    <div class="stat"><span>잠재력</span><span>${player.hidden.potential} <span class="badge">${scoutingGrade(player.hidden.potential)}</span></span></div>
   `;
 }
 
-function log(message){
-  const box=document.getElementById("log");
-  const line=document.createElement("div");
-  line.innerHTML=`[${new Date().toLocaleTimeString()}] ${message}`;
-  box.prepend(line);
+function newPlayer(){
+  player={
+    name: LAST[rand(0,LAST.length-1)] + FIRST[rand(0,FIRST.length-1)],
+    age:16,
+    team:'고교팀',
+    contact:rand(35,60),
+    power:rand(30,58),
+    velocity:rand(136,150),
+    salary:3000
+  };
+  render();
+  log('🎉 신인 선수가 생성되었습니다.');
 }
 
 function train(){
   if(!player)return;
-
-  const roll=rand(1,100);
-
-  if(roll<=55){
-    player.hitting.contact+=rand(0,2);
-    player.hitting.power+=rand(0,1);
-    log(`🏋️ ${player.name} 타격 훈련 성공!`);
-  }else if(roll<=85){
-    player.pitching.control+=rand(0,2);
-    log(`🎯 ${player.name} 제구 훈련 성공!`);
-  }else{
-    log(`😓 ${player.name}이(가) 피로를 느꼈습니다.`);
-  }
-
-  player.hitting.contact=clamp(player.hitting.contact,20,player.hidden.potential);
-  player.hitting.power=clamp(player.hitting.power,20,player.hidden.potential);
-  player.pitching.control=clamp(player.pitching.control,20,player.hidden.potential);
-
-  renderPlayer();
+  player.contact=Math.min(99,player.contact+rand(0,2));
+  player.power=Math.min(99,player.power+rand(0,1));
+  render();
+  log('🏋️ 훈련 완료');
 }
 
 function playGame(){
   if(!player)return;
-
-  const battingPower=
-    player.hitting.contact*0.45 +
-    player.hitting.power*0.35 +
-    player.hitting.eye*0.20;
-
-  const pitcherPower=
-    player.pitching.control*0.5 +
-    player.pitching.movement*0.5;
-
-  const edge=(battingPower-pitcherPower)/100;
-
-  let hitChance=0.26+edge*0.12;
-  hitChance=Math.max(0.15,Math.min(0.45,hitChance));
-
-  player.stats.games++;
-
-  if(Math.random()<hitChance){
-    player.stats.hits++;
-
-    const hrChance=player.hitting.power/400;
-
-    if(Math.random()<hrChance){
-      player.stats.homeruns++;
-      log(`💥 ${player.name} 홈런! 시즌 ${player.stats.homeruns}호`);
-    }else{
-      log(`✅ ${player.name} 안타!`);
+  const hit=Math.random()<((player.contact+player.power)/200);
+  if(hit){
+    log('✅ 안타!');
+    if(Math.random()<player.power/250){
+      log('💥 홈런!');
     }
   }else{
-    player.stats.strikeouts++;
-    log(`❌ ${player.name} 삼진`);
+    log('❌ 아웃');
   }
-
-  const avg=(player.stats.hits/player.stats.games).toFixed(3);
-  log(`📊 현재 타율: ${avg}`);
-}
-
-function calculateMarketValue(){
-  const overall=Math.max(
-    player.hitting.contact*0.45 +
-    player.hitting.power*0.35 +
-    player.hitting.eye*0.20,
-
-    player.pitching.control*0.5 +
-    player.pitching.movement*0.5
-  );
-
-  return Math.round(overall*180);
-}
-
-function calculateSalary(){
-  const value=calculateMarketValue();
-
-  let salary=Math.round(value*0.8);
-
-  if(player.stats.homeruns>=20) salary+=3000;
-  if(player.stats.games>=100) salary+=2000;
-
-  return Math.max(3000,salary);
-}
-
-function openFA(){
-  if(!player)return;
-
-  if(player.age<27 || player.serviceTime<8){
-    log(`🚫 FA 자격 부족 (나이 ${player.age}세 / 서비스타임 ${player.serviceTime}년)`);
-    return;
-  }
-
-  const market=calculateMarketValue();
-
-  let demand=Math.round(market*1.1);
-
-  if(player.agent.style==="aggressive") demand=Math.round(market*1.25);
-  if(player.agent.style==="loyal") demand=Math.round(market*0.95);
-
-  log(`💰 ${player.agent.name} 에이전트가 ${demand.toLocaleString()}만원 요구`);
-
-  const offer=Math.round(market*(0.85+Math.random()*0.25));
-
-  if(offer>=demand*0.9){
-    player.salary=offer;
-    log(`🤝 ${player.team}과 ${offer.toLocaleString()}만원 계약 체결!`);
-  }else{
-    log(`❌ 구단 제안 ${offer.toLocaleString()}만원 거절`);
-  }
-
-  renderPlayer();
-}
-
-function agingMultiplier(age){
-  if(age<18)return 0.70;
-
-  if(age<27){
-    const progress=(age-18)/(27-18);
-    return 0.70+progress*0.30;
-  }
-
-  if(age<=29)return 1.0;
-
-  if(age<=33){
-    return 1.0-(age-29)*0.012;
-  }
-
-  return Math.max(0.55,1.0-0.06-(age-33)*0.03);
 }
 
 function nextSeason(){
   if(!player)return;
-
   player.age++;
-
-  const mult=agingMultiplier(player.age);
-
-  player.hitting.contact=clamp(Math.round(player.hitting.contact*mult+rand(-1,2)),20,99);
-  player.hitting.power=clamp(Math.round(player.hitting.power*mult+rand(-1,2)),20,99);
-  player.pitching.control=clamp(Math.round(player.pitching.control*mult+rand(-1,2)),20,99);
-
   if(player.age===19){
-    player.team=KBO_TEAMS[rand(0,KBO_TEAMS.length-1)];
-    player.serviceTime=1;
-    log(`🎊 ${player.name}이(가) <b>${player.team}</b>에 지명되었습니다!`);
-  }else if(player.team!=="고교팀"){
-    player.serviceTime++;
-    player.salary=calculateSalary();
-    log(`💵 연봉 재계약 완료: ${player.salary.toLocaleString()}만원`);
+    player.team=KBO[rand(0,KBO.length-1)];
+    log('🎊 KBO 드래프트 지명!');
   }
-
-  player.stats={games:0,hits:0,homeruns:0,strikeouts:0};
-
-  log(`📅 ${player.age}세 시즌 시작`);
-  renderPlayer();
+  player.salary += rand(200,1200);
+  render();
+  log('📅 새 시즌 시작');
 }
 
-generatePlayer();
+newPlayer();
 </script>
 </body>
 </html>
