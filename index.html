@@ -1,248 +1,323 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>天下 · 천하 Complete</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚾ 선수 육성 시뮬레이션</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;900&family=Orbitron:wght@600;800&display=swap');
-:root{--bg:#04070c;--p:#0a1019;--p2:#0d1622;--line:#24364f;--text:#edf5ff;--muted:#8393aa;--cyan:#63e7ff;--violet:#9e7cff;--red:#ff5c73;--gold:#efc865;--green:#5fe2a0}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -10%,#1a2b48,#060910 48%,#02040a);color:var(--text);font-family:"Noto Sans KR",sans-serif}button,input,select{font:inherit}button{cursor:pointer}
-#app{max-width:1540px;margin:auto;padding:14px}.top{height:50px;display:flex;align-items:center;justify-content:space-between}.logo{font-family:Orbitron;letter-spacing:3px}.logo b{color:var(--cyan)}.topright{display:flex;gap:7px;flex-wrap:wrap}.pill{font-size:11px;padding:7px 10px;border:1px solid var(--line);border-radius:99px;background:#08101a;color:#b8c7da}
-.screen{display:none}.screen.active{display:block}.panel{background:linear-gradient(180deg,#0d1520f5,#080c13f5);border:1px solid var(--line);border-radius:16px;padding:15px;box-shadow:0 16px 50px #0008}.title{font-size:21px;font-weight:900}.muted{color:var(--muted)}.small{font-size:12px}.grid{display:grid;gap:10px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.btn{border:1px solid #2c405c;background:#0b1420;color:#eaf2ff;border-radius:9px;padding:10px 12px}.btn:hover{border-color:#5b759a}.primary{border-color:#46dfff;background:#102a3a}.red{border-color:#69303d;color:#ffacb8}.gold{border-color:#68582c;color:#f1d27f}.green{border-color:#2c624b;color:#9af0c6}
-.create{max-width:1180px;margin:10px auto}.hero{padding:34px;border:1px solid #2a3e5c;border-radius:22px;background:linear-gradient(135deg,#111e32,#070a10);position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:360px;height:360px;right:-120px;top:-160px;border-radius:50%;background:radial-gradient(circle,#63e7ff25,transparent 70%)}.eyebrow{color:var(--cyan);letter-spacing:4px;font-size:11px}.hero h1{font-size:64px;letter-spacing:13px;margin:8px 0}.hero p{max-width:760px;color:#b8c5d6;line-height:1.8}.choice{display:flex;flex-wrap:wrap;gap:6px}.choice button{padding:9px 11px;border:1px solid #2a3b54;background:#09111c;color:#d8e4f3;border-radius:8px}.choice button.active{border-color:var(--cyan);background:#102b3c}.section{margin:15px 0 7px;font-weight:800;color:#dbe7f7}.name{width:100%;padding:11px;background:#070c13;border:1px solid #2c3e57;border-radius:8px;color:#fff}
-.layout{display:grid;grid-template-columns:250px minmax(0,1fr) 310px;gap:10px}.left,.right{display:flex;flex-direction:column;gap:10px}.profile{overflow:hidden;position:relative;background:linear-gradient(155deg,#111d31,#080c13)}.avatar{height:170px;display:grid;place-items:center}.avatar svg{height:170px;filter:drop-shadow(0 0 25px #63e7ff25)}.rank{text-align:center;color:var(--cyan);font-weight:900;letter-spacing:3px}.pname{text-align:center;font-size:23px;font-weight:900}.sub{text-align:center;font-size:11px;color:#91a1b7}.bars{display:grid;gap:7px;margin-top:12px}.bar{height:8px;background:#1b2737;border-radius:8px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#ff5068,#ff9a67)}.qi .fill{background:linear-gradient(90deg,#5ce5ff,#8b78ff)}.xp .fill{background:linear-gradient(90deg,#9d70ff,#ec70ff)}
-.nav{display:grid;gap:5px}.nav button{border:1px solid transparent;background:transparent;color:#aab7c9;text-align:left;padding:10px;border-radius:8px}.nav button:hover{background:#101c2a;color:white}.mini{padding:9px;border:1px solid #1e2d42;border-radius:9px;background:#09101a}
-.location{position:relative;min-height:250px;overflow:hidden;background:linear-gradient(135deg,#0c1725,#070a10)}.location:before{content:"";position:absolute;inset:0;background-image:linear-gradient(#ffffff05 1px,transparent 1px),linear-gradient(90deg,#ffffff05 1px,transparent 1px);background-size:34px 34px;transform:perspective(450px) rotateX(58deg) scale(1.4);transform-origin:center bottom}.locname,.locdesc,.mapnodes{position:relative}.locname{font-size:31px;font-weight:900}.locdesc{color:#aab8ca;max-width:700px}.mapnodes{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:17px}.mapnode{padding:10px;background:#09111bdd;border:1px solid #253953;border-radius:8px;text-align:left;color:#dce7f5}.mapnode.sel{border-color:var(--cyan);box-shadow:0 0 18px #63e7ff15}
-.actiongrid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.log{height:280px;overflow:auto;display:flex;flex-direction:column;gap:5px}.log div{padding:8px 10px;background:#080f18;border-left:2px solid #30445f;border-radius:4px;font-size:12px;color:#c8d4e3}.log .good{border-color:var(--green)}.log .bad{border-color:var(--red)}.log .event{border-color:var(--gold)}.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.stat{padding:8px;background:#09111a;border:1px solid #1d2b3e;border-radius:8px}.stat b{display:block;font-size:16px}.tag{display:inline-block;padding:3px 6px;border-radius:4px;background:#162236;color:#b8ccea;font-size:10px;margin:2px}.npc{display:grid;grid-template-columns:40px 1fr;gap:8px;padding:8px;border:1px solid #1d2b3d;background:#080f17;border-radius:8px;margin-top:6px}.face{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,#506384,#111824);font-weight:900}.rumor{padding:8px;border-left:2px solid var(--gold);background:#09111a;margin-top:6px;font-size:12px}
-.modal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;z-index:99;padding:16px}.modal.open{display:flex}.modalbox{width:min(900px,100%);max-height:92vh;overflow:auto;background:#0a1018;border:1px solid #334964;border-radius:16px;padding:19px;box-shadow:0 40px 120px #000}.tabs{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0}.tabs button{padding:8px 10px;background:#0b1420;border:1px solid #26384f;color:#aebdd0;border-radius:7px}.tabs button.active{border-color:var(--cyan);color:white}.row{display:flex;gap:7px;align-items:center;justify-content:space-between}.hr{height:1px;background:#1d2a3d;margin:12px 0}
-.combat{background:radial-gradient(circle at 50% 45%,#1b2b49,#070a10 65%);border:1px solid #2a3e5c;border-radius:18px;min-height:530px;display:grid;grid-template-columns:1fr 1fr;align-items:center;position:relative;padding:24px}.fighter{text-align:center}.fighter svg{width:min(300px,90%);height:300px}.vs{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:Orbitron;font-size:40px}.combatBottom{display:grid;grid-template-columns:1.4fr 1fr;gap:10px;margin-top:10px}.skills{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.skill{padding:11px;background:#0b1420;border:1px solid #293c55;border-radius:8px;color:#eaf3ff;text-align:left}.skill b{display:block}.skill small{color:#8293aa}.death{border:1px solid #6c3140;background:#1b0b11;padding:13px;border-radius:9px}.check{display:inline-block;color:var(--green);font-weight:800}.miss{display:inline-block;color:var(--red);font-weight:800}
-@media(max-width:1150px){.layout{grid-template-columns:220px 1fr}.right{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr}.actiongrid{grid-template-columns:repeat(3,1fr)}}@media(max-width:760px){.layout{grid-template-columns:1fr}.left,.right{display:block}.left>*{margin-bottom:8px}.mapnodes,.g3,.g2,.combatBottom{grid-template-columns:1fr 1fr}.combat{grid-template-columns:1fr;min-height:620px}.vs{display:none}.hero h1{font-size:42px}.actiongrid,.skills{grid-template-columns:1fr 1fr}}
+body{margin:0;font-family:Arial,sans-serif;background:#0f172a;color:#f8fafc}
+header{background:#111827;padding:18px;text-align:center;border-bottom:2px solid #334155}
+.container{display:grid;grid-template-columns:320px 1fr;gap:20px;padding:20px}
+.panel{background:#1e293b;border-radius:12px;padding:16px}
+button{width:100%;padding:12px;margin-top:10px;border:none;border-radius:8px;background:#2563eb;color:#fff;cursor:pointer}
+button:hover{background:#1d4ed8}
+.stat{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #334155}
+.log{height:560px;overflow-y:auto;background:#0b1220;border-radius:8px;padding:10px;font-size:14px;line-height:1.5}
+.badge{background:#16a34a;border-radius:999px;padding:2px 8px;font-size:12px}
+.section-title{margin-top:0;padding-bottom:8px;border-bottom:1px solid #334155}
 </style>
 </head>
 <body>
-<div id="app">
-<header class="top"><div class="logo">TEN<b>天下</b> // COMPLETE</div><div class="topright"><span class="pill" id="clock"></span><span class="pill" id="season"></span><span class="pill" id="era"></span><span class="pill" id="saveState">SCHEMA v3</span></div></header>
+<header>
+  <h1>⚾ 선수 육성 시뮬레이션</h1>
+  <div>KBO 현실 기반 커리어 웹게임 (FA/에이전트 추가)</div>
+</header>
 
-<section id="start" class="screen active"><div class="create">
-<div class="hero"><div class="eyebrow">FREE CHOICE · RANDOMNESS · LIVING WORLD</div><h1>天下</h1><p>정해진 영웅이 없는 무협 세계. 시대, 가족, 성격, 문파, NPC, 경제, 사건이 서로 영향을 주며 한 사람의 일생을 만든다.</p><button class="btn primary" onclick="beginCreate()">새로운 삶</button> <button class="btn" onclick="loadGame()">저장된 삶 불러오기</button></div>
-<div class="panel" style="margin-top:10px"><div class="title">현재 설정 구현 체크</div><div class="grid g3" style="margin-top:9px">
-<div class="stat"><b>✓ 8종 능력치</b><span class="muted small">20포인트 자유분배 + 출신/재능</span></div>
-<div class="stat"><b>✓ 7단계 경지</b><span class="muted small">돌파 조건/강제돌파/경지차</span></div>
-<div class="stat"><b>✓ 문파 생명주기</b><span class="muted small">가입/창설/시설/파벌/후계/분열</span></div>
-<div class="stat"><b>✓ NPC 생명</b><span class="muted small">5축 성격/등급/기억/관계</span></div>
-<div class="stat"><b>✓ 경제/아이템</b><span class="muted small">물가/내구/등급/영약</span></div>
-<div class="stat"><b>✓ 세계 사건</b><span class="muted small">개인/지역/천하 + 개입</span></div>
-</div></div></div></section>
+<div class="container">
+  <div class="panel">
+    <h2 class="section-title">선수 정보</h2>
+    <div id="playerInfo"></div>
 
-<section id="create" class="screen"><div class="create panel">
-<div class="title">천하에 태어나다</div><div class="muted">설정 문서의 시작 흐름을 그대로 따른다.</div>
-<div class="section">이름</div><input id="name" class="name" value="무명">
-<div class="section">시대</div><div id="eraPick" class="choice"></div>
-<div class="section">난이도</div><div id="diffPick" class="choice"></div>
-<div class="section">출생 지역</div><div id="originRegion" class="choice"></div>
-<div class="section">신분</div><div id="originClass" class="choice"></div>
-<div class="section">가족 배경</div><div id="familyPick" class="choice"></div>
-<div class="section">재능</div><div id="talentPick" class="choice"></div>
-<div class="section">성격 5축 (-100 ~ 100)</div><div id="personality"></div>
-<div class="section">삶의 방향</div><div id="goalPick" class="choice"></div>
-<div class="section">초기 능력치 — 기본 10 + 자유분배 20</div><div id="statSliders" class="statgrid"></div>
-<div class="mini" style="margin-top:10px">남은 분배 포인트: <b id="pointsLeft">20</b> / 각 스탯 5~20</div>
-<button class="btn primary" style="margin-top:14px" onclick="createGame()">최종 확인 & 천하에 발을 들인다</button>
-</div></section>
+    <button onclick="generatePlayer()">🎲 새 선수 생성</button>
+    <button onclick="train()">🏋️ 훈련하기</button>
+    <button onclick="playGame()">⚾ 경기 진행</button>
+    <button onclick="nextSeason()">📅 다음 시즌</button>
+    <button onclick="openFA()">💰 FA 협상</button>
+  </div>
 
-<section id="game" class="screen"><div class="layout">
-<aside class="left">
-<div class="panel profile"><div class="avatar" id="avatar"></div><div class="rank" id="rank"></div><div class="pname" id="pname"></div><div class="sub" id="meta"></div>
-<div class="bars"><div>체력 <span id="hpTxt"></span><div class="bar"><div id="hpBar" class="fill"></div></div></div><div class="qi">내력 <span id="qiTxt"></span><div class="bar"><div id="qiBar" class="fill"></div></div></div><div class="xp">경험 <span id="xpTxt"></span><div class="bar"><div id="xpBar" class="fill"></div></div></div></div></div>
-<div class="panel nav">
-<button onclick="openStatus()">◈ 상태</button><button onclick="openInventory()">◈ 소지품</button><button onclick="openSect()">◈ 문파 관리</button><button onclick="openCodex()">◈ 인물 도감</button><button onclick="openFactions()">◈ 세계 세력</button><button onclick="saveGame()">◈ 저장</button><button onclick="exportSave()">◈ 백업 코드</button>
+  <div class="panel">
+    <h2 class="section-title">뉴스 / 기록</h2>
+    <div class="log" id="log"></div>
+  </div>
 </div>
-<div class="panel"><div class="title">세계 지표</div><div id="worldMetrics"></div></div>
-</aside>
-<main>
-<div class="panel location"><div class="locname" id="locName"></div><div class="locdesc" id="locDesc"></div><div class="mapnodes" id="mapNodes"></div></div>
-<div class="panel" style="margin-top:10px"><div class="title">행동</div><div class="muted small">하루 5시진. 행동마다 시간이 흐르고 세계가 갱신된다.</div><div class="actiongrid" id="actions" style="margin-top:8px"></div></div>
-<div class="panel" style="margin-top:10px"><div class="title">천하의 기록</div><div class="log" id="log"></div></div>
-</main>
-<aside class="right">
-<div class="panel"><div class="title">능력치</div><div class="statgrid" id="stats"></div></div>
-<div class="panel"><div class="title">주변 인물</div><div id="nearby"></div></div>
-<div class="panel"><div class="title">강호 소문</div><div id="rumors"></div></div>
-</aside>
-</div></section>
 
-<section id="combat" class="screen"><div class="combat" id="combatStage"></div><div class="combatBottom"><div class="panel"><div class="title">무공</div><div class="skills" id="skills"></div></div><div class="panel"><div class="title">전투 기록</div><div class="log" style="height:230px" id="fightLog"></div></div></div></section>
-
-<div id="modal" class="modal"><div class="modalbox" id="modalBox"></div></div>
-</div>
 <script>
-const $=id=>document.getElementById(id), R=(a,b)=>Math.floor(Math.random()*(b-a+1))+a, C=(x,a,b)=>Math.max(a,Math.min(b,x)), CH=p=>Math.random()*100<p, esc=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
-const REALMS=[
-{name:'삼류',cap:30,qi:0,skill:'입문',need:'시작 경지'},{name:'이류',cap:50,qi:50,skill:'입문',need:'수련 누적'},
-{name:'일류',cap:80,qi:120,skill:'소성',need:'수련 + 실전 경험'},{name:'절정',cap:120,qi:250,skill:'소성~대성',need:'수련 + 명성 조건'},
-{name:'초절정',cap:170,qi:450,skill:'대성',need:'생사결 또는 폐관'},{name:'화경',cap:230,qi:700,skill:'화경',need:'깨달음 이벤트 필수'},
-{name:'현경',cap:300,qi:1000,skill:'극의',need:'인생급 사건 필수'}];
-const ERAS=['천화왕조 전성기','천화왕조 말기','난세','신왕조 개창기'];
-const DIFF={평온:{mult:.7,death:.7},보통:{mult:1,death:1},험난:{mult:1.25,death:1.15},천마:{mult:1.65,death:1.45}};
-const REGIONS={
-중원:{price:100,desc:'천하의 중심. 정보와 돈이 모이지만 세력의 감시도 촘촘하다.',threat:25},
-강남:{price:115,desc:'수로와 상단이 발달한 부유한 지역. 사치품 가격이 높다.',threat:18},
-북원:{price:85,desc:'거칠고 추운 변경. 모피와 육류가 싸며 강한 무인이 많다.',threat:40},
-서역:{price:95,desc:'이국 물품과 상인이 뒤섞이는 땅. 물류에 따라 가격 변동이 크다.',threat:48},
-남방:{price:90,desc:'약재가 풍부하고 독과 밀림의 비밀이 살아 있다.',threat:34},
-동해:{price:105,desc:'해상 교역과 조선 자재, 해적의 소문이 끊이지 않는다.',threat:30}};
-const CLASSES={
-평민:{gold:35,rep:0,bonus:{}},'상인 가문':{gold:100,rep:2,bonus:{wis:2,cha:2}},'무인 가문':{gold:60,rep:4,bonus:{str:3,root:2}},
-'몰락 귀족':{gold:75,rep:-2,bonus:{cha:3,wis:1}},'하급 관료 집안':{gold:65,rep:3,bonus:{wis:4}},
-'산적/강호 출신':{gold:50,rep:-4,bonus:{str:2,agi:3}},'고아/떠돌이':{gold:15,rep:-1,bonus:{luck:4,agi:2}}};
-const TALENTS={
-무공적성:{bonus:{str:3,root:2},growth:1},상업감각:{bonus:{wis:2,cha:3},growth:1},언변:{bonus:{cha:5},growth:1},
-학습능력:{bonus:{wis:3,root:2},growth:1},운:{bonus:{luck:5},growth:1},천재:{bonus:{str:2,agi:2,root:2,wis:2,cha:2,luck:2},growth:1.1}};
-const GOALS=['무림에 이름을 떨친다','큰 부자가 된다','문파를 세운다','복수를 완수한다','평온하게 살아남는다'];
-const NAMES={중원:['장','이','왕','유','진','백'],강남:['남','서','진','허','윤','송'],북원:['철','몽','하','곽','설','도'],서역:['사','카','라','무','서','하'],남방:['독','연','초','남','오','주'],동해:['해','윤','송','구','장','문']};
-const GIVEN=['연화','무혁','철산','도화','청우','서문','유진','백야','소연','하린'];
-const ITEM={회복단:{type:'cons',price:15,heal:30},영단:{type:'cons',price:15,qi:30},대환단:{type:'cons',price:45,full:true},지혈약:{type:'cons',price:10,status:'출혈'},'해독환(급)':{type:'cons',price:40,status:'중독'},파혼단:{type:'cons',price:60,mental:-20}};
-const WEAPONS={일반:{mult:1,max:3,dur:100,color:'회색'},우수:{mult:1.15,max:5,dur:150,color:'청색'},희귀:{mult:1.35,max:7,dur:220,color:'남색'},보물:{mult:1.6,max:9,dur:300,color:'자색'},전설:{mult:2,max:0,dur:Infinity,color:'금색'}};
-const ARMOR={천옷:{def:2},가죽:{def:5},경갑:{def:9,agi:-1},'특수 내공의복':{def:7,qiRegen:.1},'문파 정복':{def:6}};
-let G={schemaVersion:3,player:null,world:null,npcs:[],sects:[],events:[],rumors:[],hour:0,day:1,season:0,sel:{era:ERAS[0],diff:'보통',region:'중원',cls:'평민',family:'부모 생존·화목',talent:'무공적성',goal:GOALS[0],personality:{coldWarm:0,loyalSelfish:0,cautiousBold:0,ambitiousContent:0,honestCunning:0}},tutorial:{explore:false,combat:false,level:false,map:false}},F=null;
+const KBO_TEAMS=[
+  "LG 트윈스","두산 베어스","KT 위즈","SSG 랜더스","NC 다이노스",
+  "키움 히어로즈","KIA 타이거즈","삼성 라이온즈","롯데 자이언츠","한화 이글스"
+];
 
-function pick(k,v){G.sel[k]=v;renderCreate()}
-function beginCreate(){G.sel={era:ERAS[0],diff:'보통',region:'중원',cls:'평민',family:'평범',talent:'무공적성',goal:GOALS[0],personality:{coldWarm:0,loyalSelfish:0,cautiousBold:0,ambitiousContent:0,honestCunning:0}};show('create');renderCreate()}
-function btns(arr,k){return arr.map(v=>`<button class="${G.sel[k]===v?'active':''}" onclick="pick('${k}','${v}')">${v}</button>`).join('')}
-function renderCreate(){
-$('eraPick').innerHTML=btns(ERAS,'era');$('diffPick').innerHTML=btns(Object.keys(DIFF),'diff');$('originRegion').innerHTML=btns(Object.keys(REGIONS),'region');$('originClass').innerHTML=btns(Object.keys(CLASSES),'cls');
-$('familyPick').innerHTML=btns(['부모 생존·화목','부모 생존·불화','한쪽 부모 사망','고아','형제자매 있음·흥성','형제자매 있음·몰락'],'family');
-$('talentPick').innerHTML=btns(Object.keys(TALENTS),'talent');$('goalPick').innerHTML=btns(GOALS,'goal');
-let ps=[['coldWarm','냉정 ↔ 온화'],['loyalSelfish','의리 ↔ 이기'],['cautiousBold','조심 ↔ 대담'],['ambitiousContent','야심 ↔ 무욕'],['honestCunning','정직 ↔ 교활']];
-$('personality').innerHTML=ps.map(([k,n])=>`<div class="stat"><div class="row"><span>${n}</span><b id="pv_${k}">${G.sel.personality[k]}</b></div><input id="ps_${k}" type="range" min="-100" max="100" value="${G.sel.personality[k]}" style="width:100%" oninput="G.sel.personality.${k}=+this.value;$('pv_${k}').textContent=this.value"></div>`).join('');
-let keys=['hp','qi','str','agi','root','wis','cha','luck'],defaults={hp:12,qi:12,str:12,agi:12,root:12,wis:12,cha:14,luck:14};$('statSliders').innerHTML=keys.map(k=>`<div class="stat"><div class="row"><span>${{hp:'체력',qi:'내공',str:'힘',agi:'민첩',root:'근기',wis:'지혜',cha:'매력',luck:'운'}[k]}</span><b id="sv_${k}">${defaults[k]}</b></div><input id="ss_${k}" type="range" min="5" max="20" value="${defaults[k]}" oninput="sliderChanged('${k}',this.value)" style="width:100%"></div>`).join('');updatePoints()
+const FIRST=["민준","서준","도윤","예준","시우","지호","현우","준혁"];
+const LAST=["김","이","박","최","정","강","조","윤"];
+
+const AGENTS=[
+  {name:"박성우",style:"aggressive",commission:0.05},
+  {name:"김태훈",style:"balanced",commission:0.04},
+  {name:"이준호",style:"loyal",commission:0.03}
+];
+
+let player=null;
+
+function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+
+function gaussian(mean,sd){
+  let u=0,v=0;
+  while(u===0)u=Math.random();
+  while(v===0)v=Math.random();
+  return Math.round(mean+sd*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v));
 }
-function sliderChanged(k,v){let el=$('ss_'+k),sum=['hp','qi','str','agi','root','wis','cha','luck'].reduce((s,x)=>s+(+$('ss_'+x).value),0);if(sum>100)el.value=+v-(sum-100);$('sv_'+k).textContent=el.value;updatePoints()}
-function updatePoints(){let sum=['hp','qi','str','agi','root','wis','cha','luck'].reduce((s,x)=>s+(+$('ss_'+x).value),0);$('pointsLeft').textContent=100-sum}
-function createGame(){
-let pstats={};['hp','qi','str','agi','root','wis','cha','luck'].forEach(k=>pstats[k]=+$('ss_'+k).value);
-if(Object.values(pstats).reduce((a,b)=>a+b,0)!==100){alert('기본치 10 × 8 = 80 + 자유분배 20을 정확히 사용하세요.');return}
-Object.entries(CLASSES[G.sel.cls].bonus).forEach(([k,v])=>pstats[k]+=v);Object.entries(TALENTS[G.sel.talent].bonus).forEach(([k,v])=>pstats[k]+=v);
-let family={name:G.sel.family,parents:G.sel.family.includes('고아')?0:G.sel.family.includes('한쪽')?1:2,siblings:G.sel.family.includes('형제')?R(1,3):0,status:G.sel.family.includes('몰락')?'몰락':'보통'};
-G.player={id:'p1',name:$('name').value||'무명',era:G.sel.era,difficulty:G.sel.diff,region:G.sel.region,cls:G.sel.cls,family,talent:G.sel.talent,personality:{...G.sel.personality},goal:G.sel.goal,stats:pstats,level:1,exp:0,realm:0,mastery:0,qi:70+pstats.qi*5,maxQi:70+pstats.qi*5,hp:130+pstats.hp*6,maxHp:130+pstats.hp*6,gold:CLASSES[G.sel.cls].gold,fame:CLASSES[G.sel.cls].rep,mental:0,injury:0,sectId:null,role:'',inventory:{회복단:2,영단:1,粗철검:1},equipment:{weapon:{name:'粗철검',grade:'일반',enhance:0,dur:100},armor:{name:'천옷',grade:'일반'}},relations:[],children:[],spouse:null,flags:{},memories:[]};
-G.world={factions:{정파:55,사파:35,천마교:G.sel.era==='난세'?45:15,무림맹:G.sel.era==='난세'?35:70,경제위기:G.sel.era==='난세'?35:10},regions:Object.fromEntries(Object.entries(REGIONS).map(([k,v])=>[k,{...v,war:false,blocked:false}])),lastEvents:{personal:-999,regional:-999,national:-999}};
-G.npcs=seedNPCs();G.sects=seedSects();G.rumors=['북쪽에서 수상한 무인들이 모이고 있다는 소문.','강남 상단이 새로운 호위대를 찾고 있다.'];G.events=[];G.day=1;G.hour=0;G.season=0;G.tutorial={explore:false,combat:false,level:false,map:false};saveGame();show('game');log('천하에 발을 들였다. 네 선택이 세계의 변수로 기록된다.','event');render();tutorial('start')
+
+function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
+
+function generateStat(mean=50,sd=12,min=20,max=99){
+  return clamp(gaussian(mean,sd),min,max);
 }
-function seedNPCs(){let arr=[];for(let i=0;i<12;i++){let reg=Object.keys(REGIONS)[i%6], tier=i<4?'core':i<8?'important':'minor', age=R(16,65), base=R(0,2);arr.push({id:'n'+i,name:NAMES[reg][i%NAMES[reg].length]+GIVEN[i%GIVEN.length],tier,age,alive:true,region:reg,personality:{coldWarm:R(-100,100),loyalSelfish:R(-100,100),cautiousBold:R(-100,100),ambitiousContent:R(-100,100),honestCunning:R(-100,100)},stats:{str:10+R(0,8),agi:10+R(0,8),root:10+R(0,8),wis:10+R(0,8),cha:10+R(0,8),luck:10+R(0,8),medicine:R(0,20)},realm:base,sectId:null,role:['약초꾼','표사','상인','무인','관료','의원'][i%6],affinity:R(-10,20),goal:['가문을 일으키기','강해지기','부자가 되기','복수','평온한 삶'][i%5],memories:[],relations:[],contribution:0,ill:false,betray:false,mental:0,discipline:false,children:[]})}return arr}
-function seedSects(){return[
-{id:'s1',name:'청운문',alignment:'orthodox',leaderId:'n1',members:['n1','n3'],facilities:{연무장:1,장서각:1,병기고:0,약방:0},treasury:420,reputation:35,factions:[{id:'f1',leaderId:'n1',satisfaction:65,ambition:40},{id:'f2',leaderId:'n3',satisfaction:55,ambition:60}],relations:{정파:35,사파:-10,천마교:-20},rules:[],successorId:null,split:false},
-{id:'s2',name:'흑사련',alignment:'unorthodox',leaderId:'n4',members:['n4','n6'],facilities:{연무장:1,장서각:0,병기고:1,약방:0},treasury:300,reputation:-20,factions:[{id:'f3',leaderId:'n4',satisfaction:50,ambition:75}],relations:{정파:-30,사파:35,천마교:10},rules:[],successorId:null,split:false},
-{id:'s3',name:'천마교',alignment:'cult',leaderId:'n7',members:['n7','n8'],facilities:{연무장:2,장서각:2,병기고:1,약방:1},treasury:800,reputation:-50,factions:[{id:'f4',leaderId:'n7',satisfaction:45,ambition:90}],relations:{정파:-60,사파:25,천마교:60},rules:[],successorId:null,split:false}
-]}
-function tutorial(type){if(type==='start'){openModal('<div class="title">천하에 발을 들였다</div><p>탐색·수련·거래·대화·문파·사건을 자유롭게 선택하세요. 시간과 세계 사건은 선택에 따라 계속 움직입니다.</p><button class="btn primary" onclick="closeModal()">시작하기</button>')}}
-function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active')}
-function nowText(){let phases=['새벽','아침','낮','저녁','밤'];return `제 ${G.day}일 · ${phases[G.hour]} (${G.season} · ${Math.floor((G.day-1)/30)+1}년차)`}
-function log(t,c=''){let d=document.createElement('div');d.className=c;d.textContent=`[${nowText()}] ${t}`;$('log').prepend(d)}
-function flog(t,c=''){let d=document.createElement('div');d.className=c;d.textContent=t;$('fightLog').prepend(d)}
-function advance(hours=1){let total=G.hour+hours;G.day+=Math.floor(total/5);G.hour=total%5;let old=G.season;G.season=Math.floor((G.day-1)/30)%4;if(G.season!==old){seasonTick()}saveGame()}
-function seasonTick(){
-npcSeason();worldEventCheck();economyTick();if(G.player)log('계절이 바뀌었다. 세계 각지의 인구와 사건 판정이 갱신된다.','event')
+
+function scoutingGrade(v){
+  return 20+Math.round((v/100)*60/5)*5;
 }
-function npcSeason(){let counts={};for(let n of G.npcs)if(n.alive)counts[n.region]=(counts[n.region]||0)+1;for(let reg of Object.keys(REGIONS)){let need=2-(counts[reg]||0);for(let i=0;i<Math.max(0,need);i++){let id='n'+Date.now()+R(1,999);G.npcs.push({id,name:NAMES[reg][R(0,NAMES[reg].length-1)]+GIVEN[R(0,GIVEN.length-1)],tier:'minor',age:R(16,70),alive:true,region:reg,personality:{coldWarm:R(-100,100),loyalSelfish:R(-100,100),cautiousBold:R(-100,100),ambitiousContent:R(-100,100),honestCunning:R(-100,100)},stats:{str:R(8,18),agi:R(8,18),root:R(8,18),wis:R(8,18),cha:R(8,18),luck:R(8,18),medicine:R(0,20)},realm:R(0,2),sectId:null,role:'배경 인물',affinity:0,goal:'살아남기',memories:[],relations:[],contribution:0,ill:false,betray:false,mental:0,discipline:false,children:[]})}}}
-function worldEventCheck(){
-let w=G.world,p=G.player;let pers=25*DIFF[p.difficulty].mult,reg=12*DIFF[p.difficulty].mult,nat=3*DIFF[p.difficulty].mult;
-if(w.factions.천마교>=30)reg+=10;if(w.factions.천마교>=60)nat+=5;if(w.factions.무림맹<40)reg+=5;if(w.factions.경제위기>=40)reg+=5;
-if(G.day-G.world.lastEvents.personal>=1 && CH(pers)){G.world.lastEvents.personal=G.day;personalEvent()}
-if(G.day-G.world.lastEvents.regional>=180 && CH(reg)){G.world.lastEvents.regional=G.day;regionalEvent()}
-if(G.day-G.world.lastEvents.national>=730 && CH(nat)){G.world.lastEvents.national=G.day;nationalEvent()}
+
+function randomName(){
+  return LAST[rand(0,LAST.length-1)] + FIRST[rand(0,FIRST.length-1)];
 }
-function personalEvent(){let list=['오래전 헤어진 혈족의 소문을 들었다.','낯선 노인이 네 재능을 알아봤다.','과거의 선택이 소문으로 돌아왔다.','수상한 비급의 행방을 알게 되었다.'];let e=list[R(0,list.length-1)];G.rumors.unshift(e);G.rumors=G.rumors.slice(0,6);log(e,'event')}
-function regionalEvent(){let reg=Object.keys(REGIONS)[R(0,5)],events=['산적 봉기가 일어났다.','전염병과 약재 부족의 소문이 퍼졌다.','무역로가 습격받았다.','정파와 사파의 충돌이 발생했다.'];let e=events[R(0,3)];G.world.regions[reg].threat+=R(5,15);G.world.economyShock=R(10,30);G.rumors.unshift(`${reg}: ${e}`);log(`${reg}에서 지역 사건 발생 — ${e}`,'event');if(pCanIntervene(reg))eventModal(reg,e)}
-function nationalEvent(){let e=G.world.factions.천마교>=60?'천마교 봉기의 조짐이 포착됐다.':G.world.factions.무림맹<40?'무림맹 내부 분열이 폭발했다.':G.world.factions.경제위기>=50?'천하에 기근과 반란의 불씨가 번졌다.':'천하를 뒤흔드는 거대한 무림 사건이 발생했다.';G.rumors.unshift(e);log(e,'event');if(pCanIntervene(G.player.region))eventModal('천하',e)}
-function pCanIntervene(reg){return G.player.fame>=10||reg===G.player.region}
-function eventModal(where,e){openModal(`<div class="title">⚠ 사건 알림</div><p>${esc(e)}</p><p class="muted">명성이 높을수록 직접 개입 선택지가 나타난다.</p><div class="choice"><button onclick="eventChoice('${where}','help')">개입한다</button><button onclick="eventChoice('${where}','ignore')">지켜본다</button></div>`)}
-function eventChoice(where,a){if(a==='help'){G.player.fame+=3;G.player.exp+=25;G.world.factions.무림맹+=2;log('사건에 개입했다. 명성과 관계가 변했다.','good')}else log('사건을 지켜봤다. 세계는 네가 없어도 움직인다.');closeModal();render();saveGame()}
-function economyTick(){let w=G.world;w.factions.경제위기=C(w.factions.경제위기+(w.economyShock||0)-R(0,4),0,100);w.economyShock=0;for(let [k,v] of Object.entries(w.regions)){v.price=C(v.price+R(-2,3)+(v.war?R(50,150):0),50,350);if(v.blocked)v.price=C(v.price+R(10,30),50,350)}}
-function move(reg){if(reg===G.player.region)return;let cost=R(2,4);advance(cost);G.player.region=reg;if(!G.tutorial.map){G.tutorial.map=true;log('이동에는 시간이 걸리며 새 지역마다 위험도가 다르다.','event')}log(`${reg}으로 이동했다.`,'event');render()}
-function explore(){let p=G.player,v=G.world.regions[p.region];advance(1);if(!G.tutorial.explore){G.tutorial.explore=true;log('탐색 방식에 따라 위험과 보상이 달라질 수 있다. 조심/빠르게/깊이 탐색을 고려하라.','event')}let x=R(1,100),danger=v.threat;if(x<20){p.gold+=R(10,45);log('탐색 중 돈을 발견했다.','good')}else if(x<42){p.exp+=R(8,20);log('숨겨진 흔적을 읽어 경험을 얻었다.')}else if(x<60){p.stats.luck++;log('뜻밖의 행운. 운 +1.','good')}else if(x<72){p.fame++;G.rumors.unshift('네 이름이 강호의 작은 소문으로 돌기 시작했다.');log('강호에 이름이 조금씩 알려졌다.','good')}else if(x<72+danger/3){log('위험한 무인을 만났다.','bad');startCombat(R(Math.max(0,p.realm-1),Math.min(6,p.realm+1)))}else{log('아무 일도 없었다. 하지만 세계는 계속 움직인다.')}levelCheck();render()}
-function train(){let p=G.player;advance(1);let gain=R(6,13)+Math.floor(p.stats.root/5);p.qi=C(p.qi+gain,0,p.maxQi);p.exp+=R(5,12)*(p.talent==='천재'?1.1:1);p.mastery=C(p.mastery+R(4,9),0,100);log(`수련 완료. 내력 +${gain}, 무공 숙련도 상승.`);if(CH(12)){p.stats.root++;log('깨달음의 조각을 얻었다. 근기 +1.','good')}levelCheck();render()}
-function trade(){let p=G.player;advance(1);let v=G.world.regions[p.region],profit=R(-12,22)+Math.floor((100-v.price)/4);p.gold=Math.max(0,p.gold+profit);log(profit>=0?`거래 성공. ${profit}냥 이익.`:`거래 손실 ${-profit}냥.` ,profit>=0?'good':'bad');render()}
-function rest(){advance(R(1,2));let p=G.player;p.hp=C(p.hp+55,0,p.maxHp);p.qi=C(p.qi+55,0,p.maxQi);p.injury=Math.max(0,p.injury-1);log('휴식했다. 부상이 조금 회복되었다.');render()}
-function seclusion(){let days=R(7,90),p=G.player;let need=p.realm+1;if(p.realm<6&&p.qi<REALMS[need].qi){p.qi=C(p.qi+days*4,0,p.maxQi);p.exp+=days;advance(days*5);log(`${days}일 폐관수련. 아직 돌파 조건이 부족하다.`)}else{p.qi=C(p.qi+days*5,0,p.maxQi);p.exp+=days*2;advance(days*5);log(`${days}일 폐관수련을 마쳤다.`)}levelCheck();render()}
-function talk(){let p=G.player,arr=G.npcs.filter(n=>n.alive&&n.region===p.region);if(!arr.length){log('주변에 아는 인물이 없다.');return}let n=arr[R(0,arr.length-1)];openDialogue(n)}
-function openDialogue(n){let p=G.player;let choices=[
-{text:'평범하게 이야기를 나눈다',show:true,act:'normal'},
-{text:'나의 야심을 드러낸다',show:p.personality.ambitiousContent>=60,act:'amb'},
-{text:'지혜로 상대를 설득한다',show:true,act:'wis'},
-{text:'거짓말한다',show:true,act:'lie'},
-{text:'협박한다',show:p.personality.coldWarm<=-50||p.personality.ambitiousContent>=70,act:'threat'},
-{text:'정파 평판으로 접근한다',show:p.fame>=10&&G.world.factions.무림맹>=40,act:'rep'}];
-openModal(`<div class="title">${esc(n.name)} · ${esc(n.role)}</div><div class="muted">${REALMS[n.realm].name} · 호감 ${n.affinity}</div><p>“무슨 용무지?”</p><div class="grid">${choices.filter(x=>x.show).map(x=>`<button class="btn" onclick="dialogueAct('${n.id}','${x.act}')">${x.text}</button>`).join('')}</div><div style="margin-top:10px"><button class="btn primary" onclick="closeModal()">떠난다</button></div>`)}
-function dialogueAct(id,act){let n=G.npcs.find(x=>x.id===id),p=G.player;let chance=50;if(act==='normal')chance=70;if(act==='amb')chance=C(55+p.personality.ambitiousContent*.15,20,90);if(act==='wis')chance=C(50+(p.stats.wis-(n.stats.wis||10))*1.5,20,90);if(act==='lie')chance=C(50+(p.personality.honestCunning+n.stats.wis)*.5,20,90);if(act==='threat')chance=C(50+p.stats.str*1.5+n.personality.coldWarm*.2,20,90);if(act==='rep')chance=C(50+p.fame*.8,20,90);
-let ok=CH(chance);advance(1);if(ok){let gain=act==='threat'?8:4;n.affinity+=gain;n.memories.push(`제${G.day}일 ${act} 대화 성공`);p.memories.push(`${n.name}과의 대화가 성공으로 기억됨`);if(act==='wis'){p.gold+=15;log(`${n.name}이 비밀 정보와 15냥을 건넸다.`,'good')}else log(`${n.name}과 관계가 좋아졌다. 호감 +${gain}`,'good')}else{n.affinity+=act==='lie'||act==='threat'?-30:-3;if(act==='lie'||act==='threat')G.rumors.unshift(`${n.name}이 너에 대한 좋지 않은 소문을 퍼뜨렸다.`);log(`${n.name}과의 대화가 어긋났다.`,'bad')}closeModal();render()}
-function quest(){let q=[['약초 채집',20,12],['호위',55,25],['수상한 편지 전달',90,40]][R(0,2)];advance(1);if(CH(70)){G.player.gold+=q[1];G.player.exp+=q[2];G.player.fame++;log(`${q[0]} 완료. ${q[1]}냥과 경험 획득.`,'good')}else{G.player.hp-=R(5,25);log(`${q[0]} 중 습격을 받았다.`,'bad');if(G.player.hp<=0)handleDown()}levelCheck();render()}
-function market(){let p=G.player,v=G.world.regions[p.region];openModal(`<div class="title">시장 · ${p.region}</div><p class="muted">기본 물가 ${REGIONS[p.region].price} → 현재 지수 ${v.price}</p><div class="grid g2">${Object.keys(ITEM).map(k=>`<button class="btn" onclick="buyItem('${k}')">${k}<br><small>${Math.round(ITEM[k].price*v.price/100)}냥</small></button>`).join('')}</div><div class="hr"></div><button class="btn primary" onclick="closeModal()">닫기</button>`)}
-function buyItem(k){let cost=Math.round(ITEM[k].price*G.world.regions[G.player.region].price/100);if(G.player.gold<cost){alert('돈이 부족하다.');return}G.player.gold-=cost;G.player.inventory[k]=(G.player.inventory[k]||0)+1;log(`${k} 구매.`,'good');closeModal();render()}
-function useItem(k){let p=G.player;if(!p.inventory[k])return;let it=ITEM[k];p.inventory[k]--;if(it.full){p.hp=p.maxHp;p.qi=p.maxQi}else{if(it.heal)p.hp=C(p.hp+it.heal,0,p.maxHp);if(it.qi)p.qi=C(p.qi+it.qi,0,p.maxQi);if(it.mental)p.mental=C(p.mental+it.mental,0,100)}log(`${k} 사용.`,'good');render();openInventory()}
-function brew(elixir){let p=G.player,table={하급:[85,1],중급:[60,3],상급:[35,6]}[elixir],ok=CH(table[0]);if(ok){let key=['str','root','wis','cha','luck'][R(0,4)];p.stats[key]+=table[1];log(`${elixir} 영약 성공. ${key} +${table[1]}.`,'good')}else if(elixir==='중급'){p.maxHp=Math.floor(p.maxHp*.9);p.hp=Math.min(p.hp,p.maxHp);p.injury+=14;log('중급 영약 실패. 내상: 최대 체력 -10%, 2주.','bad')}else if(elixir==='상급'){p.mental=C(p.mental+30,0,100);p.qi=Math.floor(p.qi*.7);log('상급 영약 실패. 주화입마 흔적이 남았다.','bad')}render();openInventory()}
-function forceBreak(){let p=G.player;if(p.realm>=6){alert('현경 이상은 설정 범위 밖이다.');return}let next=REALMS[p.realm+1],sum=Object.values(p.stats).reduce((a,b)=>a+b,0),need=next.qi||50,prob=C(sum/Math.max(1,need)*40,0,40);if(CH(prob)){p.realm++;p.maxHp+=20;p.maxQi+=25;p.hp=p.maxHp;p.qi=Math.max(p.qi,next.qi);log(`강제 돌파 성공! ${REALMS[p.realm].name}.`,'event')}else if(CH(50)){p.maxHp=Math.floor(p.maxHp*.8);p.hp=Math.min(p.hp,p.maxHp);p.injury+=30;log('강제 돌파 실패. 내상: 체력 최대치 -20%, 1개월.','bad')}else{p.qi=Math.floor(p.qi*.7);p.mental=C(p.mental+40,0,100);p.memories.push('주화입마의 영구 흔적');log('강제 돌파 실패. 주화입마: 내공 -30%, 심마 +40.','bad')}render();saveGame()}
-function levelCheck(){let p=G.player,threshold=100;while(p.exp>=threshold){p.exp-=threshold;p.level++;let talent=TALENTS[p.talent];let key=['str','qi','agi','root','wis','cha','luck'][R(0,6)];p.stats[key]++;p.maxHp+=8;p.maxQi+=6;if(p.talent==='천재'){p.maxHp+=2;p.maxQi+=2}if(!G.tutorial.level){G.tutorial.level=true;openModal(`<div class="title">성장 안내</div><p>근력은 공격, 내공은 내력 자원, 민첩은 명중/회피, 무공은 숙련, 운은 사건/판정에 영향을 준다.</p><button class="btn primary" onclick="closeModal()">확인</button>`)}log(`레벨 ${p.level} 성장. ${key} +1.`,'good');break}autoRealm();render()}
-function autoRealm(){let p=G.player;for(let i=p.realm+1;i<REALMS.length;i++){let r=REALMS[i];let ok=p.qi>=r.qi&&p.mastery>=({1:20,2:35,3:50,4:70,5:85,6:100}[i]||0);if(i===2)ok=ok&&p.exp<100; if(i===3)ok=ok&&p.fame>=5;if(i===4)ok=ok&&p.flags.lifeOrDeath;if(i===5)ok=ok&&p.flags.insight;if(i===6)ok=ok&&p.flags.lifeEvent;if(ok){p.realm=i;log(`정식 경지 돌파: ${r.name}.`,'event')}else break}}
-function startCombat(er){show('combat');let p=G.player;F={enemy:{name:['흑의 사내','산적 두목','사파 무인','광야의 검객','철혈귀'][R(0,4)],realm:C(er,0,6),hp:120+er*75,maxHp:120+er*75,str:14+er*10,agi:12+er*8,mastery:REALMS[er].name},guard:false,stun:0};$('combatStage').innerHTML=`<div class="fighter"><div>${personSVG(false)}</div><div class="rank">${REALMS[p.realm].name}</div><div class="pname">${esc(p.name)}</div><div class="bar"><div id="chp" class="fill"></div></div></div><div class="vs">VS</div><div class="fighter"><div>${personSVG(true)}</div><div class="rank" style="color:var(--red)">${REALMS[F.enemy.realm].name}</div><div class="pname">${esc(F.enemy.name)}</div><div class="bar"><div id="ehp" class="fill"></div></div></div>`;$('skills').innerHTML=[['기본검','basic','안정적인 공격'],['강격','heavy','내력 소모 · 필살기'],['심법','focus','내력 회복'],['반격자세','guard','피해 감소'],['도주','flee','민첩 판정'],['회복단','item','소모품']].map(s=>`<button class="skill" onclick="fight('${s[1]}')"><b>${s[0]}</b><small>${s[2]}</small></button>`).join('');$('fightLog').innerHTML='';flog(`생사결 시작. 상대 ${REALMS[F.enemy.realm].name}.`,'event');fightUI();if(!G.tutorial.combat){G.tutorial.combat=true;flog('툴팁: 공격 / 방어 / 도주는 서로 다른 생존 확률을 만든다.','event')}}
-function personSVG(enemy=false){let c=enemy?'#ff5b73':'#63e7ff';return `<svg viewBox="0 0 220 250"><circle cx="110" cy="52" r="34" fill="#070b12" stroke="${c}" stroke-width="4"/><path d="M74 88Q110 70 146 88L178 220Q110 255 42 220Z" fill="#060a10" stroke="${c}" stroke-width="4"/><path d="M75 100L22 180M145 100L199 175" stroke="${c}" stroke-width="10" stroke-linecap="round"/><path d="M72 224L40 248M149 224L182 248" stroke="#6475bd" stroke-width="12" stroke-linecap="round"/></svg>`}
-function fight(type){let p=G.player,e=F.enemy;if(!F)return;let gap=e.realm-p.realm,pen=gap>=3?.4:gap===2?.65:gap===1?.85:1;let hitPenalty=gap===1?15:gap===2?35:gap>=3?60:0;
-if(F.stun){F.stun=0;flog('위압 상태로 한 턴 행동하지 못했다.','bad')}else if(type==='flee'){let chance=C(50+p.stats.agi*2-e.agi-gap*15,10,90);if(CH(chance)){flog('도주 성공.');show('game');advance(1);render();return}else flog('도주 실패.','bad')}
-else if(type==='focus'){p.qi=C(p.qi+30,0,p.maxQi);flog('심법으로 내력 +30.','good')}
-else if(type==='guard'){F.guard=true;flog('반격자세. 다음 피해 감소.')}
-else if(type==='item'){if(!p.inventory.회복단){flog('회복단이 없다.','bad')}else{p.inventory.회복단--;p.hp=C(p.hp+30,0,p.maxHp);flog('회복단 사용.','good')}}
-else{let mastery={입문:.6,소성:1,대성:1.4,화경:1.9,극의:2.6}[p.mastery>=90?'극의':p.mastery>=70?'화경':p.mastery>=45?'대성':p.mastery>=20?'소성':'입문'];let cost=type==='heavy'?Math.floor(18*({입문:1.3,소성:1,대성:.85,화경:.7,극의:.55}[p.mastery>=90?'극의':p.mastery>=70?'화경':p.mastery>=45?'대성':p.mastery>=20?'소성':'입문'])):0;if(p.qi<cost){flog('내력이 부족하다.','bad');return}p.qi-=cost;let acc=C(80+p.stats.agi*1.2-e.agi-hitPenalty,5,95);if(CH(acc)){let mult=type==='heavy'?mastery*1.25:mastery;let dmg=Math.floor((p.stats.str*1.7+p.stats.root+R(6,16))*mult*pen);if(gap===1&&type==='heavy')dmg=Math.floor(dmg*.9);if(gap===2&&type==='heavy')dmg=Math.floor(dmg*.75);e.hp-=dmg;flog(`${type==='heavy'?'강격':'기본검'} 적중 ${dmg} 피해.`,'good');p.mastery=C(p.mastery+2,0,100)}else flog('공격 빗나감.','bad')}
-if(e.hp<=0){p.exp+=35+e.realm*8;p.gold+=35+e.realm*25;p.fame+=4;p.flags.lifeOrDeath=true;flog('승리! 생사결 경험을 얻었다.','good');show('game');advance(1);levelCheck();F=null;render();return}
-let ed=Math.floor((e.str+R(5,15))*(F.guard?.35:1));F.guard=false;if(gap<=-3&&CH(30)){F.stun=1;flog('위압! 상대가 한 턴 행동불가 상태에 빠졌다.','bad')}p.hp-=ed;flog(`반격 ${ed} 피해.`,'bad');if(p.hp<=0)handleDown();fightUI();saveGame()}
-function fightUI(){if(!F)return;$('chp').style.width=C(G.player.hp/G.player.maxHp*100,0,100)+'%';$('ehp').style.width=C(F.enemy.hp/F.enemy.maxHp*100,0,100)+'%'}
-function handleDown(){let p=G.player;p.hp=0;let allies=(p.sectId?1:0)+(p.relations||[]).filter(x=>x.affinity>40).length;let medicine=p.stats.medicine||0;let chance=C(40+allies*20+medicine*.3+(p.sectId?15:0),5,98)*DIFF[p.difficulty].death;if(CH(chance)){p.hp=Math.floor(p.maxHp*.18);p.injury+=14;log('빈사 상태에서 구조되었다. 즉사하지 않는다.','event');show('game');render()}else{deathFlow()}}
-function deathFlow(){let p=G.player;if(p.children.length||p.spouse){openModal(`<div class="death"><div class="title">빈사 끝 — 후계자의 이야기</div><p>${esc(p.name)}의 삶은 끝났다.</p><p>가족이 남아 있다. 자녀 중 한 명을 선택해 이어갈 수 있다.</p>${p.children.map((c,i)=>`<button class="btn" onclick="continueChild(${i})">${c.name} · ${c.talent}</button>`).join('')}<button class="btn red" onclick="endLife()">이 인물의 이야기를 끝낸다</button></div>`)}else endLife()}
-function continueChild(i){let p=G.player,c=p.children[i];let old=p;G.player={...c,id:'child'+Date.now(),level:1,exp:0,stats:Object.fromEntries(Object.entries(old.stats).map(([k,v])=>[k,Math.max(5,Math.floor(v*.5)+R(0,3))])),realm:0,gold:Math.floor(old.gold*.5),fame:Math.floor(old.fame*.5),sectId:old.sectId,inventory:{회복단:1},equipment:old.equipment,relations:(old.relations||[]).slice(0,Math.ceil((old.relations||[]).length/2)),children:[],spouse:null,memories:(old.memories||[]).slice(-3),hp:100,maxHp:100,qi:60,maxQi:60,mental:0,injury:0,flags:{}};closeModal();show('game');log(`${c.name}으로 이어졌다. 부모의 유산 일부를 물려받았다.`,'event');render()}
-function endLife(){closeModal();show('start');alert('이 인물의 이야기는 끝났다. 새 인물로 다시 시작할 수 있다.')}
-function ensureChild(){let p=G.player;if(!p.children.length){p.children=[{name:'후계자 '+GIVEN[R(0,GIVEN.length-1)],talent:Object.keys(TALENTS)[R(0,5)],stats:{},id:'child1'}];log('가족 관계를 통해 후계자가 기록되었다.','event')}}
-function openStatus(){let p=G.player;openModal(`<div class="title">${esc(p.name)} · ${REALMS[p.realm].name}</div><p>${p.era} · ${p.difficulty} · ${p.cls} · ${p.goal}</p><div class="statgrid">${Object.entries(p.stats).map(([k,v])=>`<div class="stat"><span class="muted">${k}</span><b>${v}</b></div>`).join('')}</div><div class="hr"></div><p>레벨 ${p.level} · 명성 ${p.fame} · ${p.gold}냥 · 심마 ${p.mental} · 부상 ${p.injury}</p><p>무공 숙련 ${p.mastery}/100 · ${REALMS[p.realm].skill}</p><div class="choice"><button class="btn gold" onclick="forceBreak()">강제 돌파 시도</button><button class="btn" onclick="ensureChild();openStatus()">후계자 관계 기록</button></div><button class="btn primary" style="margin-top:10px" onclick="closeModal()">닫기</button>`)}
-function openInventory(){let p=G.player;openModal(`<div class="title">소지품 · 장비</div><p>무기: ${p.equipment.weapon.name} · ${p.equipment.weapon.grade} +${p.equipment.weapon.enhance} · 내구 ${p.equipment.weapon.dur}</p><p>방어구: ${p.equipment.armor.name}</p><div class="grid g2">${Object.entries(p.inventory).map(([k,v])=>`<div class="stat"><b>${k} x${v}</b>${ITEM[k]?`<button class="btn" onclick="useItem('${k}')">사용</button>`:''}</div>`).join('')}</div><div class="hr"></div><div class="choice"><button class="btn" onclick="brew('하급')">하급 영약</button><button class="btn" onclick="brew('중급')">중급 영약</button><button class="btn red" onclick="brew('상급')">상급 영약</button></div><button class="btn primary" style="margin-top:10px" onclick="closeModal()">닫기</button>`)}
-function openCodex(){let p=G.player;openModal(`<div class="title">인물 도감</div>${G.npcs.filter(n=>n.alive).map(n=>`<div class="npc"><div class="face">${esc(n.name[0])}</div><div><b>${esc(n.name)}</b><div class="muted small">${n.role} · ${REALMS[n.realm].name} · ${n.region}</div><span class="tag">호감 ${n.affinity}</span><span class="tag">기억 ${n.memories.length}</span></div></div>`).join('')}<button class="btn primary" onclick="closeModal()">닫기</button>`)}
-function openFactions(){openModal(`<div class="title">세계 세력</div>${Object.entries(G.world.factions).map(([k,v])=>`<div class="stat" style="margin:6px 0"><b>${k} ${Math.round(v)}</b><div class="bar"><div class="fill" style="width:${C(v,0,100)}%"></div></div></div>`).join('')}<button class="btn primary" onclick="closeModal()">닫기</button>`)}
-function openSect(){
-let p=G.player;if(!p.sectId){openModal(`<div class="title">문파</div><p>현재 소속 문파가 없다.</p><div class="choice"><button class="btn primary" onclick="createSect()">문파 창설</button>${G.sects.map(s=>`<button class="btn" onclick="joinSect('${s.id}')">${s.name} 가입</button>`).join('')}</div><button class="btn" style="margin-top:10px" onclick="closeModal()">닫기</button>`);return}
-let s=G.sects.find(x=>x.id===p.sectId);sectTab('members',s)
+
+function assignAgent(p){
+  p.agent=AGENTS[rand(0,AGENTS.length-1)];
 }
-function sectTab(tab,s){let content='';
-if(tab==='members')content=`<div class="title">${s.name} · 인원</div><p>문주: ${G.npcs.find(n=>n.id===s.leaderId)?.name||G.player.name} · 인원 ${s.members.length}</p>${s.members.map(id=>{let n=G.npcs.find(x=>x.id===id);return n?`<div class="mini"><b>${n.name}</b> · ${REALMS[n.realm].name} · ${n.role} · 기여 ${n.contribution}</div>`:''}).join('')}<button class="btn" onclick="recruitSect()">제자 모집</button>`;
-if(tab==='finance')content=`<div class="title">${s.name} · 재정</div><p>금고 ${s.treasury}냥 · 평판 ${s.reputation}</p><button class="btn" onclick="sectIncome()">사업 운영</button> <button class="btn" onclick="sectExpense()">시설 유지</button>`;
-if(tab==='facilities')content=`<div class="title">${s.name} · 시설</div>${Object.entries(s.facilities).map(([k,v])=>`<div class="stat"><b>${k} Lv.${v}</b><button class="btn" onclick="upgradeFacility('${k}')">증축</button></div>`).join('')}<p class="muted small">병기고가 있으면 무기 수리, 약방은 회복/치료에 영향을 준다.</p>`;
-if(tab==='factions')content=`<div class="title">${s.name} · 파벌</div>${s.factions.map(f=>`<div class="stat"><b>파벌 ${f.id}</b><span class="muted">만족 ${f.satisfaction} · 야심 ${f.ambition}</span></div>`).join('')}<button class="btn red" onclick="successionCheck()">후계 승계 판정 시뮬레이션</button>`;
-if(tab==='diplomacy')content=`<div class="title">${s.name} · 외교</div>${Object.entries(s.relations).map(([k,v])=>`<div class="stat"><b>${k}</b><span class="muted">${v}</span></div>`).join('')}<button class="btn" onclick="sectDiplomacy()">외교 행동</button>`;
-openModal(`${content}<div class="tabs"><button onclick="sectTab('members',${safeObj(s)})">인원</button><button onclick="sectTab('finance',${safeObj(s)})">재정</button><button onclick="sectTab('facilities',${safeObj(s)})">시설</button><button onclick="sectTab('factions',${safeObj(s)})">파벌</button><button onclick="sectTab('diplomacy',${safeObj(s)})">외교</button></div><button class="btn primary" onclick="closeModal()">닫기</button>`)}
-function safeObj(s){return JSON.stringify(s).replaceAll('"','&quot;')}
-function joinSect(id){let s=G.sects.find(x=>x.id===id);if(!s)return;G.player.sectId=id;G.player.role='외문 제자';s.members.push(G.player.id);s.reputation+=1;closeModal();log(`${s.name}에 가입했다. 외문 제자가 되었다.`,'event');render()}
-function createSect(){let p=G.player;if(p.gold<150){alert('문파 창설에는 최소 150냥이 필요합니다.');return}p.gold-=150;let s={id:'s'+Date.now(),name:'천하문',alignment:'neutral',leaderId:p.id,members:[p.id],facilities:{연무장:1,장서각:1,병기고:0,약방:0},treasury:150,reputation:0,factions:[{id:'playerFaction',leaderId:p.id,satisfaction:70,ambition:60}],relations:{정파:0,사파:0,천마교:-10},rules:[],successorId:null,split:false};G.sects.push(s);p.sectId=s.id;p.role='문주';closeModal();log('새 문파를 창설했다. 이제 인원·재정·시설·파벌·외교를 직접 운영한다.','event');render()}
-function recruitSect(){let s=G.sects.find(x=>x.id===G.player.sectId);if(!s)return;let candidates=G.npcs.filter(n=>n.alive&&!n.sectId&&n.region===G.player.region);if(!candidates.length){log('모집 가능한 인물이 없다.');return}let n=candidates[R(0,candidates.length-1)];n.sectId=s.id;s.members.push(n.id);n.contribution+=5;log(`${n.name}을 ${s.name}에 영입했다.`,'good');render();openSect()}
-function sectIncome(){let s=G.sects.find(x=>x.id===G.player.sectId);s.treasury+=R(20,60);advance(1);log('문파 사업으로 금고가 늘었다.','good');render();openSect()}
-function sectExpense(){let s=G.sects.find(x=>x.id===G.player.sectId);let c=30;if(s.treasury<c){alert('금고가 부족하다.')}else{s.treasury-=c;advance(1);log('문파 시설 유지비를 지출했다.');render();openSect()}}
-function upgradeFacility(k){let s=G.sects.find(x=>x.id===G.player.sectId),cost=80*(s.facilities[k]+1);if(s.treasury<cost){alert('금고 부족');return}s.treasury-=cost;s.facilities[k]++;log(`${k}을 Lv.${s.facilities[k]}로 증축했다.`,'good');render();openSect()}
-function sectDiplomacy(){let s=G.sects.find(x=>x.id===G.player.sectId),k=['정파','사파','천마교'][R(0,2)];s.relations[k]=C((s.relations[k]||0)+R(-5,10),-100,100);advance(1);log(`${k}와 외교 접촉을 했다.`,'event');render();openSect()}
-function successionCheck(){let s=G.sects.find(x=>x.id===G.player.sectId);let cand=s.members.map(id=>G.npcs.find(n=>n.id===id)).filter(Boolean);if(G.player.role==='문주')cand.push({id:G.player.id,name:G.player.name,stats:G.player.stats,realm:G.player.realm,affinity:50,contribution:50,mental:G.player.mental,betray:false,ill:false,discipline:false});
-let scores=cand.map(n=>{let type=s.alignment==='cult'?'cult':s.alignment==='orthodox'?'orthodox':'neutral',w=type==='cult'?[.6,.05,.1]:[.3,.35,.15];let blood=0;let dis=(n.ill?-25:0)+(n.betray?-50:0)+((n.mental||0)>=40?-30:0)+(n.discipline?-40:0);return {...n,score:(n.stats?.str||10)*w[0]+(n.affinity||0)*w[1]+(n.contribution||0)*.1+blood-dis}}).sort((a,b)=>b.score-a.score);if(!scores.length){s.reputation=Math.floor(s.reputation*.8);log('후계 후보가 없어 대리 체제에 들어갔다.','bad');return}let a=scores[0],b=scores[1];let dispute=b&&a.score-b.score<a.score*.15;if(dispute){log('후계자 점수차가 15% 미만. 비무/장로회/암투 분쟁이 발생한다.','event');if(CH(33)){log('비무 대결로 후계자가 결정됐다.','event')}else if(CH(50)){log('장로회 표결로 후계자가 결정됐다.','event')}else{s.split=true;s.reputation=Math.floor(s.reputation*.6);log('암투 끝에 문파가 분열되었다. 세력치 -40%.','bad')}}else log(`승계 판정 1위: ${a.name} (${Math.round(a.score)}점).`,'good');s.successorId=a.id;render();openSect()}
-function repairWeapon(){let p=G.player,w=p.equipment.weapon;if(w.grade==='전설'){log('전설 무기는 파괴되지 않으며 봉인만 가능하다.');return}let cost=20;if(p.sectId){let s=G.sects.find(x=>x.id===p.sectId);if(s?.facilities.병기고)cost=10}if(p.gold<cost){alert('수리비 부족');return}p.gold-=cost;w.dur=WEAPONS[w.grade].dur;log('무기를 수리했다.','good');render();openInventory()}
-function exportSave(){let code=btoa(unescape(encodeURIComponent(JSON.stringify(G))));openModal(`<div class="title">세이브 백업 코드</div><textarea style="width:100%;height:160px;background:#05090f;color:#dfeaff;border:1px solid #263950">${code}</textarea><p class="muted small">이 코드를 별도 보관하면 브라우저 데이터가 사라져도 복구할 수 있다.</p><button class="btn primary" onclick="closeModal()">닫기</button>`)}
-function importSave(){let code=prompt('백업 코드를 붙여 넣으세요.');if(!code)return;try{let x=JSON.parse(decodeURIComponent(escape(atob(code))));G=migrate(x);show('game');render();}catch(e){alert('잘못된 코드입니다.')}}
-function migrate(x){if(!x.schemaVersion)x.schemaVersion=1;if(x.schemaVersion<3){x.schemaVersion=3;x.tutorial=x.tutorial||{}}return x}
-function saveGame(){localStorage.setItem('murim_save_v3',JSON.stringify(G));if($('saveState'))$('saveState').textContent='SAVED · v3'}
-function loadGame(){let raw=localStorage.getItem('murim_save_v3');if(!raw){let old=localStorage.getItem('cheonha_v2');if(old)raw=old}if(!raw){alert('저장된 삶이 없습니다.');return}try{G=migrate(JSON.parse(raw));show('game');render();log('저장된 삶을 불러왔다.','event')}catch(e){alert('세이브를 읽을 수 없습니다.')}}
-function pCanStartSect(){return G.player.level>=1}
-function render(){
-if(!G.player)return;let p=G.player,w=G.world;let phases=['새벽','아침','낮','저녁','밤'];$('clock').textContent=nowText();$('season').textContent=['봄','여름','가을','겨울'][G.season];$('era').textContent=p.era;$('saveState').textContent='SCHEMA v3';$('pname').textContent=p.name;$('rank').textContent=REALMS[p.realm].name;$('meta').textContent=`${p.cls} · ${p.region} · ${p.talent} · ${p.role||'무소속'}`;$('avatar').innerHTML=personSVG(false);
-$('hpTxt').textContent=`${Math.floor(p.hp)}/${p.maxHp}`;$('qiTxt').textContent=`${Math.floor(p.qi)}/${p.maxQi}`;$('xpTxt').textContent=`${Math.floor(p.exp)}/100`;$('hpBar').style.width=C(p.hp/p.maxHp*100,0,100)+'%';$('qiBar').style.width=C(p.qi/p.maxQi*100,0,100)+'%';$('xpBar').style.width=C(p.exp,0,100)+'%';
-$('stats').innerHTML=Object.entries({체력:'hp',내공:'qi',힘:'str',민첩:'agi',근기:'root',지혜:'wis',매력:'cha',운:'luck'}).map(([a,k])=>`<div class="stat"><span class="muted small">${a}</span><b>${p.stats[k]}</b></div>`).join('');
-let v=w.regions[p.region];$('locName').textContent=p.region;$('locDesc').textContent=`${REGIONS[p.region].desc} 위험도 ${Math.round(v.threat)} · 현재 물가 ${Math.round(v.price)}${v.war?' · 전쟁지역':''}${v.blocked?' · 무역로 차단':''}`;$('mapNodes').innerHTML=Object.keys(REGIONS).map(n=>`<button class="mapnode ${n===p.region?'sel':''}" onclick="move('${n}')"><b>${n}</b><br><span class="muted small">기준 ${REGIONS[n].price} · 위협 ${Math.round(w.regions[n].threat)}</span></button>`).join('');
-$('actions').innerHTML=[['탐색','explore'],['수련','train'],['거래','trade'],['휴식','rest'],['폐관','seclusion'],['대화','talk'],['의뢰','quest'],['시장','market'],['비무','duel'],['문파','openSect']].map(x=>`<button class="btn ${x[1]==='duel'?'red':''}" onclick="${x[1]}()">${x[0]}</button>`).join('');
-$('nearby').innerHTML=G.npcs.filter(n=>n.alive&&n.region===p.region).slice(0,6).map(n=>`<div class="npc"><div class="face">${esc(n.name[0])}</div><div><b>${esc(n.name)}</b><div class="muted small">${n.role} · ${REALMS[n.realm].name}</div><span class="tag">호감 ${n.affinity}</span><span class="tag">${n.tier}</span></div></div>`).join('')||'<span class="muted small">주변 인물 없음</span>';
-$('rumors').innerHTML=G.rumors.slice(0,6).map(x=>`<div class="rumor">${esc(x)}</div>`).join('');$('worldMetrics').innerHTML=`<div class="mini">천마교 <b>${Math.round(w.factions.천마교)}</b></div><div class="mini">무림맹 결속 <b>${Math.round(w.factions.무림맹)}</b></div><div class="mini">경제위기 <b>${Math.round(w.factions.경제위기)}</b></div><div class="mini">사망 대비 구조보정 <b>${p.sectId?'문파 +15':'없음'}</b></div>`;
+
+function generatePlayer(){
+  let velocity=clamp(gaussian(143,4),133,160);
+
+  if(velocity>=155 && Math.random()>0.005){
+    velocity=rand(148,154);
+  }
+
+  player={
+    name:randomName(),
+    age:18,
+    team:"고교팀",
+    salary:3000,
+    serviceTime:0,
+    hitting:{
+      contact:generateStat(45,10),
+      power:generateStat(42,10),
+      eye:generateStat(44,10)
+    },
+    pitching:{
+      velocity,
+      control:generateStat(45,10),
+      movement:generateStat(44,10),
+      stamina:generateStat(50,10)
+    },
+    hidden:{
+      potential:generateStat(75,8,60,95),
+      durability:generateStat(65,12),
+      mentality:generateStat(60,15)
+    },
+    stats:{
+      games:0,
+      hits:0,
+      homeruns:0,
+      strikeouts:0
+    }
+  };
+
+  assignAgent(player);
+
+  renderPlayer();
+  log(`🎉 신인 선수 <b>${player.name}</b> 생성!`);
+  log(`🤝 에이전트: <b>${player.agent.name}</b> (${player.agent.style})`);
 }
-function duel(){startCombat(C(G.player.realm+R(-1,1),0,6))}
-function openModal(html){$('modalBox').innerHTML=html;$('modal').classList.add('open')}function closeModal(){$('modal').classList.remove('open')}
-renderCreate();
+
+function renderPlayer(){
+  if(!player)return;
+
+  document.getElementById("playerInfo").innerHTML=`
+    <div class="stat"><span>이름</span><strong>${player.name}</strong></div>
+    <div class="stat"><span>나이</span><strong>${player.age}세</strong></div>
+    <div class="stat"><span>팀</span><strong>${player.team}</strong></div>
+    <div class="stat"><span>연봉</span><strong>${player.salary.toLocaleString()}만원</strong></div>
+    <div class="stat"><span>서비스타임</span><strong>${player.serviceTime}년</strong></div>
+    <div class="stat"><span>에이전트</span><strong>${player.agent.name}</strong></div>
+
+    <hr style="border-color:#334155">
+
+    <div class="stat"><span>컨택</span><span>${player.hitting.contact} <span class="badge">${scoutingGrade(player.hitting.contact)}</span></span></div>
+    <div class="stat"><span>파워</span><span>${player.hitting.power} <span class="badge">${scoutingGrade(player.hitting.power)}</span></span></div>
+    <div class="stat"><span>선구안</span><span>${player.hitting.eye} <span class="badge">${scoutingGrade(player.hitting.eye)}</span></span></div>
+    <div class="stat"><span>구속</span><span>${player.pitching.velocity} km/h</span></div>
+    <div class="stat"><span>제구</span><span>${player.pitching.control} <span class="badge">${scoutingGrade(player.pitching.control)}</span></span></div>
+    <div class="stat"><span>잠재력</span><span>${player.hidden.potential} <span class="badge">${scoutingGrade(player.hidden.potential)}</span></span></div>
+  `;
+}
+
+function log(message){
+  const box=document.getElementById("log");
+  const line=document.createElement("div");
+  line.innerHTML=`[${new Date().toLocaleTimeString()}] ${message}`;
+  box.prepend(line);
+}
+
+function train(){
+  if(!player)return;
+
+  const roll=rand(1,100);
+
+  if(roll<=55){
+    player.hitting.contact+=rand(0,2);
+    player.hitting.power+=rand(0,1);
+    log(`🏋️ ${player.name} 타격 훈련 성공!`);
+  }else if(roll<=85){
+    player.pitching.control+=rand(0,2);
+    log(`🎯 ${player.name} 제구 훈련 성공!`);
+  }else{
+    log(`😓 ${player.name}이(가) 피로를 느꼈습니다.`);
+  }
+
+  player.hitting.contact=clamp(player.hitting.contact,20,player.hidden.potential);
+  player.hitting.power=clamp(player.hitting.power,20,player.hidden.potential);
+  player.pitching.control=clamp(player.pitching.control,20,player.hidden.potential);
+
+  renderPlayer();
+}
+
+function playGame(){
+  if(!player)return;
+
+  const battingPower=
+    player.hitting.contact*0.45 +
+    player.hitting.power*0.35 +
+    player.hitting.eye*0.20;
+
+  const pitcherPower=
+    player.pitching.control*0.5 +
+    player.pitching.movement*0.5;
+
+  const edge=(battingPower-pitcherPower)/100;
+
+  let hitChance=0.26+edge*0.12;
+  hitChance=Math.max(0.15,Math.min(0.45,hitChance));
+
+  player.stats.games++;
+
+  if(Math.random()<hitChance){
+    player.stats.hits++;
+
+    const hrChance=player.hitting.power/400;
+
+    if(Math.random()<hrChance){
+      player.stats.homeruns++;
+      log(`💥 ${player.name} 홈런! 시즌 ${player.stats.homeruns}호`);
+    }else{
+      log(`✅ ${player.name} 안타!`);
+    }
+  }else{
+    player.stats.strikeouts++;
+    log(`❌ ${player.name} 삼진`);
+  }
+
+  const avg=(player.stats.hits/player.stats.games).toFixed(3);
+  log(`📊 현재 타율: ${avg}`);
+}
+
+function calculateMarketValue(){
+  const overall=Math.max(
+    player.hitting.contact*0.45 +
+    player.hitting.power*0.35 +
+    player.hitting.eye*0.20,
+
+    player.pitching.control*0.5 +
+    player.pitching.movement*0.5
+  );
+
+  return Math.round(overall*180);
+}
+
+function calculateSalary(){
+  const value=calculateMarketValue();
+
+  let salary=Math.round(value*0.8);
+
+  if(player.stats.homeruns>=20) salary+=3000;
+  if(player.stats.games>=100) salary+=2000;
+
+  return Math.max(3000,salary);
+}
+
+function openFA(){
+  if(!player)return;
+
+  if(player.age<27 || player.serviceTime<8){
+    log(`🚫 FA 자격 부족 (나이 ${player.age}세 / 서비스타임 ${player.serviceTime}년)`);
+    return;
+  }
+
+  const market=calculateMarketValue();
+
+  let demand=Math.round(market*1.1);
+
+  if(player.agent.style==="aggressive") demand=Math.round(market*1.25);
+  if(player.agent.style==="loyal") demand=Math.round(market*0.95);
+
+  log(`💰 ${player.agent.name} 에이전트가 ${demand.toLocaleString()}만원 요구`);
+
+  const offer=Math.round(market*(0.85+Math.random()*0.25));
+
+  if(offer>=demand*0.9){
+    player.salary=offer;
+    log(`🤝 ${player.team}과 ${offer.toLocaleString()}만원 계약 체결!`);
+  }else{
+    log(`❌ 구단 제안 ${offer.toLocaleString()}만원 거절`);
+  }
+
+  renderPlayer();
+}
+
+function agingMultiplier(age){
+  if(age<18)return 0.70;
+
+  if(age<27){
+    const progress=(age-18)/(27-18);
+    return 0.70+progress*0.30;
+  }
+
+  if(age<=29)return 1.0;
+
+  if(age<=33){
+    return 1.0-(age-29)*0.012;
+  }
+
+  return Math.max(0.55,1.0-0.06-(age-33)*0.03);
+}
+
+function nextSeason(){
+  if(!player)return;
+
+  player.age++;
+
+  const mult=agingMultiplier(player.age);
+
+  player.hitting.contact=clamp(Math.round(player.hitting.contact*mult+rand(-1,2)),20,99);
+  player.hitting.power=clamp(Math.round(player.hitting.power*mult+rand(-1,2)),20,99);
+  player.pitching.control=clamp(Math.round(player.pitching.control*mult+rand(-1,2)),20,99);
+
+  if(player.age===19){
+    player.team=KBO_TEAMS[rand(0,KBO_TEAMS.length-1)];
+    player.serviceTime=1;
+    log(`🎊 ${player.name}이(가) <b>${player.team}</b>에 지명되었습니다!`);
+  }else if(player.team!=="고교팀"){
+    player.serviceTime++;
+    player.salary=calculateSalary();
+    log(`💵 연봉 재계약 완료: ${player.salary.toLocaleString()}만원`);
+  }
+
+  player.stats={games:0,hits:0,homeruns:0,strikeouts:0};
+
+  log(`📅 ${player.age}세 시즌 시작`);
+  renderPlayer();
+}
+
+generatePlayer();
 </script>
-</body></html>
+</body>
+</html>
