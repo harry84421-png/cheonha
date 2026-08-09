@@ -100,12 +100,12 @@ const TALENTS={
 무공적성:{bonus:{str:3,root:2},growth:1},상업감각:{bonus:{wis:2,cha:3},growth:1},언변:{bonus:{cha:5},growth:1},
 학습능력:{bonus:{wis:3,root:2},growth:1},운:{bonus:{luck:5},growth:1},천재:{bonus:{str:2,agi:2,root:2,wis:2,cha:2,luck:2},growth:1.1}};
 const GOALS=['무림에 이름을 떨친다','큰 부자가 된다','문파를 세운다','복수를 완수한다','평온하게 살아남는다'];
-const NAMES={중원:['장','이','왕','유','진','백'],북원:['철','몽','하','곽','설','도'],서역:['사','카','라','무','서','하'],남방:['독','연','초','남','오','주'],동해:['해','윤','송','구','장','문']};
+const NAMES={중원:['장','이','왕','유','진','백'],강남:['남','서','진','허','윤','송'],북원:['철','몽','하','곽','설','도'],서역:['사','카','라','무','서','하'],남방:['독','연','초','남','오','주'],동해:['해','윤','송','구','장','문']};
 const GIVEN=['연화','무혁','철산','도화','청우','서문','유진','백야','소연','하린'];
 const ITEM={회복단:{type:'cons',price:15,heal:30},영단:{type:'cons',price:15,qi:30},대환단:{type:'cons',price:45,full:true},지혈약:{type:'cons',price:10,status:'출혈'},'해독환(급)':{type:'cons',price:40,status:'중독'},파혼단:{type:'cons',price:60,mental:-20}};
 const WEAPONS={일반:{mult:1,max:3,dur:100,color:'회색'},우수:{mult:1.15,max:5,dur:150,color:'청색'},희귀:{mult:1.35,max:7,dur:220,color:'남색'},보물:{mult:1.6,max:9,dur:300,color:'자색'},전설:{mult:2,max:0,dur:Infinity,color:'금색'}};
 const ARMOR={천옷:{def:2},가죽:{def:5},경갑:{def:9,agi:-1},'특수 내공의복':{def:7,qiRegen:.1},'문파 정복':{def:6}};
-let G={schemaVersion:3,player:null,world:null,npcs:[],sects:[],events:[],rumors:[],hour:0,day:1,season:0,sel:{},tutorial:{explore:false,combat:false,level:false,map:false}},F=null;
+let G={schemaVersion:3,player:null,world:null,npcs:[],sects:[],events:[],rumors:[],hour:0,day:1,season:0,sel:{era:ERAS[0],diff:'보통',region:'중원',cls:'평민',family:'부모 생존·화목',talent:'무공적성',goal:GOALS[0],personality:{coldWarm:0,loyalSelfish:0,cautiousBold:0,ambitiousContent:0,honestCunning:0}},tutorial:{explore:false,combat:false,level:false,map:false}},F=null;
 
 function pick(k,v){G.sel[k]=v;renderCreate()}
 function beginCreate(){G.sel={era:ERAS[0],diff:'보통',region:'중원',cls:'평민',family:'평범',talent:'무공적성',goal:GOALS[0],personality:{coldWarm:0,loyalSelfish:0,cautiousBold:0,ambitiousContent:0,honestCunning:0}};show('create');renderCreate()}
@@ -116,7 +116,7 @@ $('familyPick').innerHTML=btns(['부모 생존·화목','부모 생존·불화',
 $('talentPick').innerHTML=btns(Object.keys(TALENTS),'talent');$('goalPick').innerHTML=btns(GOALS,'goal');
 let ps=[['coldWarm','냉정 ↔ 온화'],['loyalSelfish','의리 ↔ 이기'],['cautiousBold','조심 ↔ 대담'],['ambitiousContent','야심 ↔ 무욕'],['honestCunning','정직 ↔ 교활']];
 $('personality').innerHTML=ps.map(([k,n])=>`<div class="stat"><div class="row"><span>${n}</span><b id="pv_${k}">${G.sel.personality[k]}</b></div><input id="ps_${k}" type="range" min="-100" max="100" value="${G.sel.personality[k]}" style="width:100%" oninput="G.sel.personality.${k}=+this.value;$('pv_${k}').textContent=this.value"></div>`).join('');
-let keys=['hp','qi','str','agi','root','wis','cha','luck'];$('statSliders').innerHTML=keys.map(k=>`<div class="stat"><div class="row"><span>${{hp:'체력',qi:'내공',str:'힘',agi:'민첩',root:'근기',wis:'지혜',cha:'매력',luck:'운'}[k]}</span><b id="sv_${k}">10</b></div><input id="ss_${k}" type="range" min="5" max="20" value="10" oninput="sliderChanged('${k}',this.value)" style="width:100%"></div>`).join('');updatePoints()
+let keys=['hp','qi','str','agi','root','wis','cha','luck'],defaults={hp:12,qi:12,str:12,agi:12,root:12,wis:12,cha:14,luck:14};$('statSliders').innerHTML=keys.map(k=>`<div class="stat"><div class="row"><span>${{hp:'체력',qi:'내공',str:'힘',agi:'민첩',root:'근기',wis:'지혜',cha:'매력',luck:'운'}[k]}</span><b id="sv_${k}">${defaults[k]}</b></div><input id="ss_${k}" type="range" min="5" max="20" value="${defaults[k]}" oninput="sliderChanged('${k}',this.value)" style="width:100%"></div>`).join('');updatePoints()
 }
 function sliderChanged(k,v){let el=$('ss_'+k),sum=['hp','qi','str','agi','root','wis','cha','luck'].reduce((s,x)=>s+(+$('ss_'+x).value),0);if(sum>100)el.value=+v-(sum-100);$('sv_'+k).textContent=el.value;updatePoints()}
 function updatePoints(){let sum=['hp','qi','str','agi','root','wis','cha','luck'].reduce((s,x)=>s+(+$('ss_'+x).value),0);$('pointsLeft').textContent=100-sum}
@@ -135,6 +135,7 @@ function seedSects(){return[
 {id:'s2',name:'흑사련',alignment:'unorthodox',leaderId:'n4',members:['n4','n6'],facilities:{연무장:1,장서각:0,병기고:1,약방:0},treasury:300,reputation:-20,factions:[{id:'f3',leaderId:'n4',satisfaction:50,ambition:75}],relations:{정파:-30,사파:35,천마교:10},rules:[],successorId:null,split:false},
 {id:'s3',name:'천마교',alignment:'cult',leaderId:'n7',members:['n7','n8'],facilities:{연무장:2,장서각:2,병기고:1,약방:1},treasury:800,reputation:-50,factions:[{id:'f4',leaderId:'n7',satisfaction:45,ambition:90}],relations:{정파:-60,사파:25,천마교:60},rules:[],successorId:null,split:false}
 ]}
+function tutorial(type){if(type==='start'){openModal('<div class="title">천하에 발을 들였다</div><p>탐색·수련·거래·대화·문파·사건을 자유롭게 선택하세요. 시간과 세계 사건은 선택에 따라 계속 움직입니다.</p><button class="btn primary" onclick="closeModal()">시작하기</button>')}}
 function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active')}
 function nowText(){let phases=['새벽','아침','낮','저녁','밤'];return `제 ${G.day}일 · ${phases[G.hour]} (${G.season} · ${Math.floor((G.day-1)/30)+1}년차)`}
 function log(t,c=''){let d=document.createElement('div');d.className=c;d.textContent=`[${nowText()}] ${t}`;$('log').prepend(d)}
